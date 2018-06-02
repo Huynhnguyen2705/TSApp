@@ -13,7 +13,9 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import tsapp.component.MyViewReference;
+import tsapp.component.myTheme;
 import tsapp.view.Login_view;
 
 /**
@@ -26,16 +28,19 @@ public class TSApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-    JFrame f = new JFrame();
-    f.setLayout(new BorderLayout());
-    final Login_view p = new Login_view();
-    
-    f.add(p, BorderLayout.CENTER);
-    f.pack();
-    f.setVisible(true);
- 
-      
+        myTheme myTheme = new myTheme();
+        SwingUtilities.invokeLater(() -> {
+            try {
+                JFrame frame = new Login_view();
+                frame.setSize(1280, 800);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+                frame.pack();
+            } catch (Exception ex) {
+                Logger.getLogger(TSApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
     }
-    
+
 }
