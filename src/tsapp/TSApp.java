@@ -5,6 +5,17 @@
  */
 package tsapp;
 
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Color;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import tsapp.component.MyViewReference;
+import tsapp.view.Login_view;
+
 /**
  *
  * @author Huynh
@@ -16,6 +27,15 @@ public class TSApp {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+    JFrame f = new JFrame();
+    f.setLayout(new BorderLayout());
+    final Login_view p = new Login_view();
+    
+    f.add(p, BorderLayout.CENTER);
+    f.pack();
+    f.setVisible(true);
+ 
+      
     }
     
 }
