@@ -70,7 +70,7 @@ public class Login_view extends JFrame {
         c.add(lblTitle, gc);
         // Add Username
         lblUsername = new JLabel("Tài khoản");
-        lblUsername.setFont(new Font("Helvetica Neue", Font.PLAIN, 14));
+        lblUsername.setFont(new Font("Myriad Pro", Font.PLAIN, 14));
 
         txtUsername = new JTextField();
         txtUsername.setPreferredSize(new Dimension(250, 35));
@@ -82,13 +82,16 @@ public class Login_view extends JFrame {
 
         //Add Password
         lblPassword = new JLabel("Mật khẩu ");
-        lblPassword.setFont(new Font("Helvetica Neue", Font.PLAIN, 14));
+        lblPassword.setFont(new Font("Myriad Pro", Font.PLAIN, 14));
 
         txtPassword = new JPasswordField();
         txtPassword.setPreferredSize(new Dimension(250, 35));
 
         JPanel temp2 = new myPanel(new FlowLayout());
 
+        txtUsername.setText("huynhntn");
+        txtPassword.setText("admin");
+        
         temp2.add(lblPassword);
         temp2.add(txtPassword);
 
@@ -156,19 +159,19 @@ public class Login_view extends JFrame {
     }
 
     private void setFocusTF() {
-        txtUsername.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                txtUsername.setForeground(Color.BLACK);
-                txtUsername.setFont(new Font("Myriad Pro", Font.ITALIC, 18));
-                txtUsername.setText("");
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });
+//        txtUsername.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//                txtUsername.setForeground(Color.BLACK);
+//                txtUsername.setFont(new Font("Myriad Pro", Font.ITALIC, 18));
+//                txtUsername.setText("");
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//        });
 
         txtPassword.addFocusListener(new FocusListener() {
             @Override
