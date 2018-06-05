@@ -5,18 +5,12 @@
  */
 package tsapp;
 
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Color;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import tsapp.component.MyViewReference;
 import tsapp.component.myTheme;
-import tsapp.view.Login_view;
+import tsapp.view.Login;
 
 /**
  *
@@ -31,7 +25,7 @@ public class TSApp {
         myTheme myTheme = new myTheme();
         SwingUtilities.invokeLater(() -> {
             try {
-                JFrame frame = new Login_view();
+                JFrame frame = new Login();
                 frame.setSize(1280, 800);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setVisible(true);

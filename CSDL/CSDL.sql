@@ -1,5 +1,5 @@
+﻿
 create database TS;
-
 create table CustomerType(
 -- ID: CusType01 -> CusType 10
 	ID varchar(9) primary key,
@@ -53,30 +53,25 @@ create table Paramater(
 	TypeName nvarchar(30)
  );
 
- create table Volume(
-	--ID: Vol0000001 -> Vol1000000
-	ID varchar(10) primary key,
-	VolValue int,
-	UsedTimes int
+ create table ProductSize(
+	--ID: Size01 -> Siza001
+	ID varchar(6) primary key,
+	SizeName int
  );
  create table Product(
  -- ID: Prod000001 -> Prod100000
 	ID varchar(10) primary key,
 	ProductName nvarchar(30),
 	Price money,
-	Price_text nvarchar(100),
-	ValidDate date,
-	Quantity int,
 	--gram
-	Volume varchar(10) FOREIGN KEY REFERENCES Volume(ID),
-	UsedTimes int,
+	Size varchar(6) FOREIGN KEY REFERENCES ProdSize(ID),
 	ProductType varchar(11) FOREIGN KEY REFERENCES ProductType(ID)
  );
  
  create table Invoice(
  -- ID: Invce0000001 -> Invce1000000
 	ID varchar(12) primary key,
-	CreatedDate date,
+	CreatedDate datetime,
 	EmpID varchar(6) FOREIGN KEY REFERENCES Employee(ID),
 	CusID varchar(8) FOREIGN KEY REFERENCES Customer(ID),
 	InvoiceNote nvarchar(200),
@@ -90,63 +85,6 @@ create table InvoiceDetail(
 	ProdID varchar(10) FOREIGN KEY REFERENCES Product(ID),
 	Quantity int
 );
-
-
--- TRIGGERS
-
-GO
--- Firing when a row of InvoiceDetail is inserted
--- Checking Product Quantity
-CREATE TRIGGER ProductQuantity ON InvoiceDetail  
-AFTER INSERT  
-AS  
-	-- inserted value
-	DECLARE @v_InvoiceDetailID varchar(19);
-	DECLARE @v_InvceID varchar(12);
-	DECLARE @v_InsertedQuantity int;
-	DECLARE @v_ProductID varchar(10);
-	----------------------------------
-	DECLARE @v_UsedTimes int;
-	DECLARE @v_VolumeID varchar(10);
-	DECLARE @v_VolumeUsedTimes int;
-	DECLARE @v_ProdQuantity int;
-
-	-- inserted value
-	SELECT @v_ProductID = i.ProdID FROM inserted i;
-	SELECT @v_InvoiceDetailID = i.ID FROM inserted i;
-	SELECT @v_InvceID = i.InvceID FROM inserted i;
-	SELECT @v_InsertedQuantity = i.Quantity FROM inserted i;
-	-----------------------------------------------------------
-	SELECT @v_ProdQuantity = p.quantity FROM Product p WHERE p.ID = @v_ProductID;
-	SELECT @v_UsedTimes = (P.UsedTimes + @v_InsertedQuantity) FROM Product P WHERE P.ID = @v_ProductID;
-	SELECT @v_VolumeID = P.volume FROM Product P WHERE P.ID = @v_ProductID;
-	SELECT @v_VolumeUsedTimes = UsedTimes FROM Volume WHERE Volume.ID = @v_VolumeID;
-
-	
-
-	if(@v_UsedTimes > @v_VolumeUsedTimes)
-		BEGIN  
-			IF(@v_ProdQuantity > 0)
-				BEGIN
-					UPDATE Product SET quantity = quantity - 1 WHERE Product.ID = @v_ProductID;
-					UPDATE Product SET UsedTimes = @v_UsedTimes - @v_VolumeUsedTimes
-									 WHERE Product.ID = @v_ProductID;
-					--- insert invoice detail
-					INSERT INTO InvoiceDetail VALUES(@v_InvoiceDetailID,@v_InvceID,@v_ProductID,@v_InsertedQuantity);
-				END
-			ELSE
-			BEGIN 
-				PRINT ('Product is sold out!!');  
-				ROLLBACK TRANSACTION;  
-				RETURN 
-			END
-		END
-	else
-		BEGIN
-		 UPDATE Product set UsedTimes = UsedTimes + @v_InsertedQuantity WHERE Product.ID = @v_ProductID;
-		 INSERT INTO InvoiceDetail VALUES(@v_InvoiceDetailID,@v_InvceID,@v_ProductID,@v_InsertedQuantity);
-		END;
-
 
 
 -- PROCETURES
@@ -163,3 +101,51 @@ AS
 	END	 
 	
 EXECUTE get_Employee_login 'quann','admin'
+
+drop proc searchCustomer
+go
+create procedure searchCustomer
+	@p_keyword varchar(100)
+AS
+	BEGIN
+		SELECT	Customer.ID, FullName, PhoneNumber,TotalBill, typeName,
+		CONVERT(INT, (SUBSTRING(Customer.ID,3,6))) AS CusInt FROM Customer, CustomerType
+		WHERE Customer.CusType = CustomerType.ID and 
+			( Customer.ID LIKE N'%' + @p_keyword +'%'  or
+				FullName LIKE N'%' + @p_keyword +'%' or
+				PhoneNumber LIKE N'%' + @p_keyword +'%' or
+				typeName LIKE N'%' + @p_keyword +'%')
+		ORDER BY CusInt DESC;
+
+	END
+
+	
+execute searchCustomer 'kh'
+
+go
+create procedure insertCustomer
+	@p_ID varchar(8),
+	@p_fullName nvarchar(50),
+	@p_phoneNumber varchar(11),
+	@p_totalBill money,
+	@p_cusType varchar(9)
+AS
+	BEGIN
+		insert into Customer values(@p_ID, @p_fullName, @p_phoneNumber, @p_totalBill, @p_cusType);
+	END
+
+delete from Customer where ID = 'KH11'
+exec insertCustomer 'KH11', N'Triển Chính Hy','04523568542',50000000,'CusType02'
+
+
+go
+create procedure updateCustomer
+	@p_ID varchar(8),
+	@p_fullName nvarchar(50),
+	@p_phoneNumber varchar(11)
+AS
+	BEGIN
+		update Customer set FullName = @p_fullName, PhoneNumber = @p_phoneNumber
+		WHERE ID = @p_ID;
+	END
+exec updateCustomer 'KH1',N'Trần Gia Huynh','01234568524'

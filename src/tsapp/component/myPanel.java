@@ -14,7 +14,7 @@ import javax.swing.JPanel;
  * @author Huynh
  */
 public class myPanel extends JPanel{
-    Color color = new Color(204, 0, 0);
+    Color color = new Color(25, 104, 192);
 //    Color color = new Color(203, 220, 230);
 
 
