@@ -19,7 +19,7 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
-    private Employee emp = new Employee();
+    private Employee emp;
     private final Login_controller controller = new Login_controller();
 
     public Login() {

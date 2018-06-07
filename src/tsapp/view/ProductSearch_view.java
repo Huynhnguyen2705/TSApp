@@ -186,7 +186,9 @@ public class ProductSearch_view extends javax.swing.JPanel {
             }
         });
 
-        table.addMouseListener(mouseListener);
+        if("Role01".equals(emp.getAccRole())){
+            table.addMouseListener(mouseListener);
+        }
     }
     private final MouseListener mouseListener = new MouseListener() {
         @Override

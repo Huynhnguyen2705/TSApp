@@ -16,6 +16,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,6 +61,7 @@ public class Main extends JFrame {
     public static Customer_view kh;
     public static Employee_view emp_view;
     public static Product_view prod_view;
+    public static Invoice_view invoice;
 
     // Cac man hinh
     public static final String MAINFORM = "TRANG CHỦ";
@@ -75,7 +77,6 @@ public class Main extends JFrame {
             nguoidung = nd;
 
             createGUI();
-            //setEnable(nd.getAccRole());
             actionListener();
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,11 +91,23 @@ public class Main extends JFrame {
         tabbedPane.addTab(MAINFORM, panelMain);
         tabbedPane.setFont(new Font("Myriad Pro", Font.PLAIN, 15));
 
+        hasPermission();
         // Hien thi man hinh main
         c.add(tabbedPane);
         c.setVisible(true);
     }
 
+    private void hasPermission(){
+        if("Role02".equals(nguoidung.getAccRole())){
+            btnNguoidung.setEnabled(false);
+            btnNguoidung.setBackground(Color.GRAY);
+            btnQuydinh.setBackground(Color.GRAY);
+            btnQuydinh.setEnabled(false);
+        }else{
+            btnNguoidung.setEnabled(true);
+            btnQuydinh.setEnabled(true);
+        }
+    }
     public final void mainForm() throws IOException {
         panelMain = new myPanel(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
@@ -188,7 +201,8 @@ public class Main extends JFrame {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
             frame.pack();
-            dispose();
+            tabbedPane.removeAll();
+            this.dispose();
         });
         btnKhachhang.addActionListener((ActionEvent e) -> {
             kh = new Customer_view(nguoidung);
@@ -208,6 +222,12 @@ public class Main extends JFrame {
             addTabBottomDown(SANPHAM, prod_view);
             tabbedPane.setSelectedComponent(prod_view);
 
+        });
+
+        btnHoadon.addActionListener((ActionEvent e) -> {
+            invoice = new Invoice_view(nguoidung);
+            addTabBottomDown(HOADON, invoice);
+            tabbedPane.setSelectedComponent(invoice);
         });
 
     }
