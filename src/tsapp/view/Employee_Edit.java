@@ -74,9 +74,7 @@ public class Employee_Edit extends javax.swing.JPanel {
     }
 
     private void loadDatatoTF(){
-        ArrayList<Employee> rs = new ArrayList<>();
-        rs = controller.searchEmployee(selectedID);
-        Employee e = rs.get(0);
+        Employee e = controller.searchEmployeeID(selectedID);
         NameTF.setText(e.getFullName());
         phoneTF.setText(e.getPhoneNumber());
         defaultDate1 = convertSqlDateToJavaDate(e.getDOB());

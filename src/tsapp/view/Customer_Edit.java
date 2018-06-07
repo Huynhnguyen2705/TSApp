@@ -31,7 +31,7 @@ public class Customer_Edit extends javax.swing.JPanel {
     private final String tenND;
     private final String THEM_KHACHHANG = ">Thêm";
     private Customer_controller controller;
-    private ArrayList<Customer> listCus;
+    Customer cus;
     private String selectedID;
 
     public Customer_Edit(Employee emp) {
@@ -53,10 +53,10 @@ public class Customer_Edit extends javax.swing.JPanel {
 
         controller = new Customer_controller();
         selectedID = CustomerSearch_view.selectedCustomerID;
-        listCus = controller.searchCustomer(selectedID);
+        cus = controller.searchCustomerID(selectedID);
         CusIDLabel.setText(selectedID);
-        NameTF.setText(listCus.get(0).getFullName());
-        phoneTF.setText(listCus.get(0).getPhoneNumber());
+        NameTF.setText(cus.getFullName());
+        phoneTF.setText(cus.getPhoneNumber());
 
     }
 

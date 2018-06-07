@@ -17,11 +17,10 @@ import tsapp.model.Employee_model;
  * @author Huynh
  */
 public class Employee_controller {
-    
+
     Employee_model model = new Employee_model();
-    
-    
-    public ArrayList<Employee> searchEmployee(String keyword){
+
+    public ArrayList<Employee> searchEmployee(String keyword) {
         ArrayList<Employee> rs = new ArrayList<>();
         try {
             rs = model.searchEmployee(keyword);
@@ -30,16 +29,26 @@ public class Employee_controller {
         }
         return rs;
     }
-    public boolean insertEmployee(Employee e, String passwd){
-        return model.insertEmployee(e,passwd);
+
+    public Employee searchEmployeeID(String keyword) {
+        try {
+            return model.searchEmployeeID(keyword);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(Employee_controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
-    
-    public boolean updateAccount(Employee e, String passwd){
-        return model.updateAccount(e,passwd);
+
+    public boolean insertEmployee(Employee e, String passwd) {
+        return model.insertEmployee(e, passwd);
     }
-    
-    public boolean updateEmployee(Employee e){
+
+    public boolean updateAccount(Employee e, String passwd) {
+        return model.updateAccount(e, passwd);
+    }
+
+    public boolean updateEmployee(Employee e) {
         return model.updateEmployee(e);
     }
-    
+
 }

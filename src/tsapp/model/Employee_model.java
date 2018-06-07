@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 public class Employee_model {
 
     private final String SEARCH_EMPLOYEE = "{call searchEmployee(?)}";
+    private final String SEARCH_EMPLOYEE_ID = "{call searchEmp_ID(?)}";
     private final String INSERT_ACCOUNT = "{call insertAccount(?,?,?)}";
     private final String INSERT_EMPLOYEE = "{call insertEmployee(?,?,?,?,?,?,?,?)}";
     private final String UPDATE_ACCOUNT = "{call updateAccount(?,?,?)}";
@@ -52,7 +53,6 @@ public class Employee_model {
                 item.setStatue(rs.getInt("Statue"));
                 item.setIDInt(rs.getInt("IDInt"));
                 listEmp.add(item);
-                System.out.print(item.getFullName());
             }
 
             return listEmp;
@@ -65,6 +65,39 @@ public class Employee_model {
         return listEmp;
     }
 
+    public Employee searchEmployeeID(String keyword) throws ClassNotFoundException, SQLException {
+        try {
+
+            connection = myConnection.getSQLServerConnection();
+
+            callStament = connection.prepareCall(SEARCH_EMPLOYEE_ID);
+
+            callStament.setString(1, keyword);
+            rs = callStament.executeQuery();
+            if (rs.next()) {
+                Employee item = new Employee();
+                item.setID(rs.getString("ID"));
+                item.setFullName(rs.getString("EmpFullName"));
+                item.setPhoneNumber(rs.getString("PhoneNumber"));
+                item.setDOB(rs.getDate("DOB"));
+                item.setIDCard(rs.getString("IDCard"));
+                item.setEmpAddress(rs.getString("EmpAddress"));
+                item.setUserName(rs.getString("UserName"));
+                item.setAccRole(rs.getString("RoleName"));
+                item.setStatue(rs.getInt("Statue"));
+                item.setIDInt(rs.getInt("IDInt"));
+                return item;
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Employee_model.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            connection.close();
+        }
+        return null;
+    }
+
+    
     public boolean insertEmployee(Employee e,String passwd) {
 
         try {

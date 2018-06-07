@@ -30,6 +30,16 @@ public class Customer_controller {
         }
         return rs;
     }
+    
+    public Customer searchCustomerID(String ID){
+        try {
+            return model.searchCustomerID(ID);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(Customer_controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     public boolean insertCustomer(Customer cus){
         return model.insertCustomer(cus);
     }

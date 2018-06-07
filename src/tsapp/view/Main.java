@@ -59,6 +59,7 @@ public class Main extends JFrame {
     private Employee nguoidung = new Employee();
     public static Customer_view kh;
     public static Employee_view emp_view;
+    public static Product_view prod_view;
 
     // Cac man hinh
     public static final String MAINFORM = "TRANG CHỦ";
@@ -72,7 +73,7 @@ public class Main extends JFrame {
         try {
             tenND = nd.getFullName();
             nguoidung = nd;
-                
+
             createGUI();
             //setEnable(nd.getAccRole());
             actionListener();
@@ -120,7 +121,6 @@ public class Main extends JFrame {
         lblTennd = new JLabel("Xin chào, " + tenND);
         lblTennd.setFont(new Font("Myriad Pro", Font.ITALIC, 14));
 
-
         JPanel temp1 = new myPanel(new FlowLayout());
         temp1.add(lblTennd);
 
@@ -143,7 +143,7 @@ public class Main extends JFrame {
         btnQuydinh = new myButton("QUY ĐỊNH");
 
         btnLogout = new myButton("ĐĂNG XUẤT");
-        btnLogout.setForeground(new Color (25,104,192));
+        btnLogout.setForeground(new Color(25, 104, 192));
 
         panelButton.add(btnHoadon);
         panelButton.add(btnSanpham);
@@ -159,9 +159,8 @@ public class Main extends JFrame {
         panelMain.add(panelButton, gc);
     }
 
-   
-    private void setEnable(String role){
-        if("Role02".equals(role)){
+    private void setEnable(String role) {
+        if ("Role02".equals(role)) {
             btnNguoidung.setEnabled(false);
             btnQuydinh.setEnabled(false);
         }
@@ -173,37 +172,43 @@ public class Main extends JFrame {
         btnLogout.setEnabled(true);
     }
 
-    public static void addTabBottomDown(String tabName, JPanel componentName){
+    public static void addTabBottomDown(String tabName, JPanel componentName) {
         tabbedPane.removeAll();
         tabbedPane.addTab(MAINFORM, panelMain);
         tabbedPane.addTab(tabName, componentName);
         tabbedPane.setFont(new Font("Myriad Pro", Font.PLAIN, 15));
-        
+
     }
 
     public final void actionListener() {
         // Thoát
         btnLogout.addActionListener((ActionEvent e) -> {
-                JFrame frame = new Login();
-                frame.setSize(1300, 760);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setVisible(true);
-                frame.pack();
-                dispose();
+            JFrame frame = new Login();
+            frame.setSize(1300, 760);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+            frame.pack();
+            dispose();
         });
         btnKhachhang.addActionListener((ActionEvent e) -> {
             kh = new Customer_view(nguoidung);
             addTabBottomDown(KHACHHANG, kh);
             tabbedPane.setSelectedIndex(1);
-            
-            
+
         });
-        
+
         btnNguoidung.addActionListener((ActionEvent e) -> {
-           emp_view = new Employee_view(nguoidung);
+            emp_view = new Employee_view(nguoidung);
             addTabBottomDown(NHANVIEN, emp_view);
             tabbedPane.setSelectedComponent(emp_view);
         });
-        
+
+        btnSanpham.addActionListener((ActionEvent e) -> {
+            prod_view = new Product_view(nguoidung);
+            addTabBottomDown(SANPHAM, prod_view);
+            tabbedPane.setSelectedComponent(prod_view);
+
+        });
+
     }
 }

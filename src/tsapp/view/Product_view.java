@@ -5,6 +5,11 @@
  */
 package tsapp.view;
 
+import Entity.Employee;
+import java.awt.event.ActionEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author Huynh
@@ -12,10 +17,49 @@ package tsapp.view;
 public class Product_view extends javax.swing.JPanel {
 
     /**
-     * Creates new form Customer_view
+     * Creates new form NewJPanel
      */
-    public Product_view() {
+    private final Employee emp;
+    private final String tenND;
+    private final String THEM = ">Thêm";
+    private final String TRACUU = ">Tra cứu";
+
+    public Product_view(Employee emp) {
         initComponents();
+        this.emp = emp;
+        tenND = emp.getFullName();
+        createUI();
+        actionListener();
+    }
+
+    private void createUI() {
+        usernameLabel.setText("Xin chào " + tenND);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        currentDateLabel.setText("Ngày " + dateFormat.format(date));
+
+    }
+
+    public final void actionListener() {
+        // Thoát
+        btnBack.addActionListener((ActionEvent e) -> {
+            Main.tabbedPane.setSelectedIndex(0);
+
+        });
+        
+        btnTraCuu.addActionListener((ActionEvent e) -> {
+            Main.addTabBottomDown(Main.SANPHAM, Main.prod_view);
+            ProductSearch_view search_view = new ProductSearch_view(emp);
+            Main.tabbedPane.add(TRACUU,search_view);
+            Main.tabbedPane.setSelectedComponent(search_view);
+        });
+        
+        btnThem.addActionListener((ActionEvent e) -> {
+            Main.addTabBottomDown(Main.SANPHAM, Main.prod_view);
+            Product_Add add = new Product_Add(emp);
+            Main.tabbedPane.add(THEM,add);
+            Main.tabbedPane.setSelectedComponent(add);
+        });
     }
 
     /**
@@ -27,21 +71,76 @@ public class Product_view extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setPreferredSize(new java.awt.Dimension(1300, 760));
+        usernameLabel = new javax.swing.JLabel();
+        btnBack = new javax.swing.JButton();
+        lablelKH = new javax.swing.JLabel();
+        currentDateLabel = new javax.swing.JLabel();
+        btnThem = new javax.swing.JButton();
+        btnTraCuu = new javax.swing.JButton();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 448, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 262, Short.MAX_VALUE)
-        );
+        setBackground(new java.awt.Color(25, 104, 192));
+        setPreferredSize(new java.awt.Dimension(1056, 452));
+        setLayout(null);
+
+        usernameLabel.setFont(new java.awt.Font("Myriad Pro", 0, 36)); // NOI18N
+        usernameLabel.setText("Xin chào");
+        add(usernameLabel);
+        usernameLabel.setBounds(40, 20, 670, 40);
+
+        btnBack.setBackground(new java.awt.Color(255, 255, 255));
+        btnBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/btnBack.PNG"))); // NOI18N
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+        add(btnBack);
+        btnBack.setBounds(40, 90, 130, 30);
+
+        lablelKH.setFont(new java.awt.Font("Myriad Pro", 0, 36)); // NOI18N
+        lablelKH.setText("SẢN PHẨM");
+        add(lablelKH);
+        lablelKH.setBounds(340, 150, 260, 70);
+
+        currentDateLabel.setFont(new java.awt.Font("Myriad Pro", 0, 36)); // NOI18N
+        currentDateLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        add(currentDateLabel);
+        currentDateLabel.setBounds(1010, 20, 300, 40);
+
+        btnThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/btnThem.PNG"))); // NOI18N
+        btnThem.setText("jButton2");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
+        add(btnThem);
+        btnThem.setBounds(760, 270, 290, 100);
+
+        btnTraCuu.setBackground(new java.awt.Color(255, 255, 255));
+        btnTraCuu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/btnTraCuu.PNG"))); // NOI18N
+        btnTraCuu.setText("jButton3");
+        add(btnTraCuu);
+        btnTraCuu.setBounds(340, 270, 300, 100);
+
+        getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBackActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnTraCuu;
+    private javax.swing.JLabel currentDateLabel;
+    private javax.swing.JLabel lablelKH;
+    private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
 }

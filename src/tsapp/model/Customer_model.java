@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 public class Customer_model {
 
     private final String SEARCH_CUSTOMER = "{call searchCustomer(?)}";
+    private final String SEARCH_CUSTOMER_ID = "{call searchCus_ID(?)}";
     private final String INSERT_CUSTOMER = "{call insertCustomer (?,?,?,?,?)}";
     private final String UPDATE_CUSTOMER = "{call updateCustomer(?,?,?)}";
     Connection connection;
@@ -46,7 +47,6 @@ public class Customer_model {
                 item.setCusType(rs.getString("typeName"));
                 item.setCusInt(rs.getInt("CusInt"));
                 listCus.add(item);
-                System.out.print(item.getFullName());
             }
 
             return listCus;
@@ -58,6 +58,38 @@ public class Customer_model {
         }
         return listCus;
     }
+    
+    
+    public Customer searchCustomerID(String keyword) throws ClassNotFoundException, SQLException {
+        try {
+
+            connection = myConnection.getSQLServerConnection();
+
+            callStament = connection.prepareCall(SEARCH_CUSTOMER_ID);
+
+            callStament.setString(1, keyword);
+            rs = callStament.executeQuery();
+            if (rs.next()) {
+                Customer item = new Customer();
+                item.setID(rs.getString("ID"));
+                item.setFullName(rs.getString("FullName"));
+                item.setPhoneNumber(rs.getString("PhoneNumber"));
+                item.setTotalBill(rs.getBigDecimal("TotalBill"));
+                item.setCusType(rs.getString("typeName"));
+                item.setCusInt(rs.getInt("CusInt"));
+                return item;
+            }
+
+            
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Customer_model.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            connection.close();
+        }
+        return null;
+    }
+
 
     public boolean insertCustomer(Customer cus) {
 

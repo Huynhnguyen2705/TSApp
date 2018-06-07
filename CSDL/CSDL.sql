@@ -50,13 +50,14 @@ create table Paramater(
   create table ProductType(
   -- ID: ProdType001 -> ProdType100
 	ID varchar(11) primary key,
-	TypeName nvarchar(30)
+	TypeName nvarchar(30),
+	Statue tinyint
  );
 
  create table ProductSize(
 	--ID: Size01 -> Siza001
 	ID varchar(6) primary key,
-	SizeName int
+	SizeName varchar(10)
  );
  create table Product(
  -- ID: Prod000001 -> Prod100000
@@ -65,7 +66,8 @@ create table Paramater(
 	Price money,
 	--gram
 	Size varchar(6) FOREIGN KEY REFERENCES ProdSize(ID),
-	ProductType varchar(11) FOREIGN KEY REFERENCES ProductType(ID)
+	ProductType varchar(11) FOREIGN KEY REFERENCES ProductType(ID),
+	Statue tinyint
  );
  
  create table Invoice(
@@ -105,7 +107,7 @@ EXECUTE get_Employee_login 'quann','admin'
 drop proc searchCustomer
 go
 create procedure searchCustomer
-	@p_keyword varchar(100)
+	@p_keyword nvarchar(100)
 AS
 	BEGIN
 		SELECT	Customer.ID, FullName, PhoneNumber,TotalBill, typeName,
@@ -120,8 +122,19 @@ AS
 	END
 
 	
-execute searchCustomer 'kh'
+execute searchCustomer 'thường'
 
+go
+create procedure searchCus_ID
+	@p_ID varchar(8)
+AS
+	BEGIN
+	SELECT	Customer.ID, FullName, PhoneNumber,TotalBill, typeName,
+		CONVERT(INT, (SUBSTRING(Customer.ID,3,6))) AS CusInt FROM Customer, CustomerType
+		WHERE Customer.CusType = CustomerType.ID and 
+		Customer.ID = @p_ID
+	END
+exec searchCus_ID 'KH2'
 go
 create procedure insertCustomer
 	@p_ID varchar(8),
@@ -153,11 +166,11 @@ exec updateCustomer 'KH1',N'Trần Gia Huynh','01234568524'
 
 go
 create procedure searchEmployee
-	@p_keyword varchar(100)
+	@p_keyword nvarchar(100)
 AS
 	BEGIN
 		SELECT	Employee.ID, EmpFullName, PhoneNumber,DOB, IDCard, EmpAddress, Account.UserName, RoleAcc.RoleName, Employee.Statue,
-		CONVERT(INT, (SUBSTRING(Employee.ID,4,2))) AS IDInt FROM Employee, RoleAcc, Account
+		CONVERT(INT, (SUBSTRING(Employee.ID,3,3))) AS IDInt FROM Employee, RoleAcc, Account
 		WHERE Employee.UserName = Account.UserName and
 			Account.AccRole = RoleAcc.ID and 
 			( Employee.ID LIKE N'%' + @p_keyword +'%'  or
@@ -171,8 +184,21 @@ AS
 
 	END
 	drop proc searchEmployee
-exec searchEmployee 'qua'
+exec searchEmployee 'nv'
 
+go
+create procedure searchEmp_ID
+	@p_ID varchar(6)
+AS
+	BEGIN
+		SELECT	Employee.ID, EmpFullName, PhoneNumber,DOB, IDCard, EmpAddress, Account.UserName, RoleAcc.RoleName, Employee.Statue,
+		CONVERT(INT, (SUBSTRING(Employee.ID,3,3))) AS IDInt FROM Employee, RoleAcc, Account
+		WHERE Employee.UserName = Account.UserName and
+			Account.AccRole = RoleAcc.ID and 
+			Employee.ID = @p_ID
+	END	
+
+exec searchEmp_ID 'NV2'
 go
 
 go
@@ -201,10 +227,136 @@ AS
 	BEGIN
 		insert into Employee values(@p_ID, @p_fullName, @p_phoneNumber, @p_DOB, @p_IDCard, @p_Address, @p_UserName, @p_Status);
 	END
+	delete from Employee where ID = 'NV5'
+	exec insertEmployee 'NV4','test johnson','11111111111','02/18/1991','555555555','Jakarta','test',1
 
-	exec insertEmployee 'NV4','test johnson','11111111111','04/02/1991','555555555','Jakarta','test',1
+go 
+create procedure updateAccount
+	@p_username varchar(20),
+	@p_password varchar(30),
+	@p_accRole varchar(6)
+AS
+	BEGIN
+		update Account set Passwrd = @p_password, AccRole = @p_accRole
+		where UserName = @p_username;
+	END
+exec updateAccount 'test','testUpdate','Role02'
+drop proc updateAccount
+go
+create procedure updateEmp
+	@p_ID varchar(6),
+	@p_name nvarchar(40),
+	@p_phone varchar(11),
+	@p_DOB date,
+	@p_IDCard varchar(12),
+	@p_address nvarchar(100),
+	@p_status tinyint
+AS
+	BEGIN
+		update Employee set EmpFullName = @p_name, PhoneNumber = @p_phone, DOB = @p_DOB, 
+			IDCard = @p_IDCard, EmpAddress = @p_address, Statue = @p_status
+		where ID = @p_ID;
+	END
+exec updateEmp 'NV4','test Update','1111111111','12/20/1989','356987542','Updated',2
+
+go
+create procedure searchProduct
+	@p_keyword nvarchar(100)
+AS
+	BEGIN
+		SELECT	Product.ID as ProdID, ProductName, Price, TypeName, SizeName, Product.Statue as ProdStatue,
+		 ProductSize.ID as SizeID, ProductType.ID as TypeID, ProductType.Statue as TypeStatus, CONVERT(INT, (SUBSTRING(Product.ID,3,7))) AS IDInt 
+		FROM Product, ProductType, ProductSize
+		WHERE Product.ProductType = ProductType.ID and
+			Product.Size = ProductSize.ID and 
+			( Product.ID LIKE N'%' + @p_keyword +'%'  or
+				ProductName LIKE N'%' + @p_keyword +'%' or
+				Price LIKE N'%' + @p_keyword +'%' or
+				TypeName LIKE N'%' + @p_keyword +'%' or
+				SizeName LIKE N'%' + @p_keyword +'%')
+		ORDER BY IDInt DESC;
+
+	END
+	
+	exec searchProduct N'đào'
+	go
+create procedure searchProduct_Status
+	@p_keyword nvarchar(100),
+	@p_status int
+AS
+	BEGIN
+		SELECT	Product.ID as ProdID, ProductName, Price, TypeName, SizeName, Product.Statue as ProdStatue,
+		 ProductSize.ID as SizeID, ProductType.ID as TypeID, ProductType.Statue as TypeStatus, CONVERT(INT, (SUBSTRING(Product.ID,3,7))) AS IDInt 
+		FROM Product, ProductType, ProductSize
+		WHERE Product.ProductType = ProductType.ID and
+			Product.Size = ProductSize.ID and 
+				Product.Statue = @p_status	and
+			( Product.ID LIKE N'%' + @p_keyword +'%'  or
+				ProductName LIKE N'%' + @p_keyword +'%' or
+				Price LIKE N'%' + @p_keyword +'%' or
+				TypeName LIKE N'%' + @p_keyword +'%' or
+				SizeName LIKE N'%' + @p_keyword +'%')
+		ORDER BY IDInt DESC;
+
+	END
+	drop proc searchProduct_Status
+exec searchProduct_Status N'đào',1
 
 
+go
+create procedure searchProd_ID
+	@p_ID varchar(10)
+AS
+	BEGIN
+		SELECT	Product.ID as ProdID, ProductName, Price, TypeName, SizeName, Product.Statue as ProdStatue,
+		 ProductSize.ID as SizeID, ProductType.ID as TypeID, ProductType.Statue as TypeStatus, CONVERT(INT, (SUBSTRING(Product.ID,3,7))) AS IDInt 
+		FROM Product, ProductType, ProductSize
+		WHERE Product.ProductType = ProductType.ID and
+			Product.Size = ProductSize.ID and
+			Product.ID = @p_ID		
+	END
+exec searchProd_ID 'SP10'
 
+go
+create procedure getProductType
+AS
+	BEGIN
+		select ID, TypeName, Statue from ProductType
+	END;
 
+create procedure getProductSize
+AS
+	BEGIN
+		select ID, ProductSize.SizeName as SizeName from ProductSize
+	END
+
+exec getProductSize
+
+create procedure insertProduct
+	@p_ID varchar(10),
+	@p_Name nvarchar(30),
+	@p_Price money,
+	@p_Size varchar(6),
+	@p_Type varchar(11),
+	@p_Statue tinyint
+AS
+	BEGIN
+		insert into Product values (@p_ID, @p_Name, @p_Price, @p_Size, @p_Type, @p_Statue);
+	END
+exec insertProduct 'SP41',N'Thạch táo',5000,'Size0','ProdType6',1
+
+create procedure updateProduct
+	@p_ID varchar(10),
+	@p_Name nvarchar(30),
+	@p_Price money,
+	@p_Size varchar(6),
+	@p_Type varchar(11),
+	@p_Statue tinyint
+AS
+	BEGIN
+		update Product set ProductName = @p_Name, Price = @p_Price, Size = @p_Size, ProductType = @p_Type, Statue = @p_Statue
+		where ID = @p_ID
+	END
+exec updateProduct 'SP1','test update',15000,'Size2','ProdType2',2
+	
 

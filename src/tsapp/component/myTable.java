@@ -26,8 +26,8 @@ public class myTable extends JTable{
 //        rowSorter = new TableRowSorter<>(super.getModel());
 //        super.setRowSorter(rowSorter);
 //        rowSorter.sort();       
-        super.setFont(new Font("Myriad Pro", Font.PLAIN, 15));
-        super.getTableHeader().setFont(new Font("Myriad Pro", Font.BOLD, 16));
+        super.setFont(new Font("Helvetica Neue", Font.PLAIN, 15));
+        super.getTableHeader().setFont(new Font("Helvetica Neue", Font.BOLD, 16));
         super.setShowGrid(true);
         super.setGridColor(Color.BLACK);
         super.setRowHeight(25);
