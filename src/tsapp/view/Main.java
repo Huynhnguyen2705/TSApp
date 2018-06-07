@@ -9,7 +9,6 @@ import Entity.Employee;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -59,12 +58,14 @@ public class Main extends JFrame {
     //Entity
     private Employee nguoidung = new Employee();
     public static Customer_view kh;
+    public static Employee_view emp_view;
 
     // Cac man hinh
     public static final String MAINFORM = "TRANG CHỦ";
     public static final String HOADON = "HÓA ĐƠN";
     public static final String SANPHAM = "SẢN PHẨM";
     public static final String KHACHHANG = "KHÁCH HÀNG";
+    public static final String NHANVIEN = "NHÂN VIÊN";
 
     public Main(Employee nd) {
         super("QUẢN LÝ CỬA HÀNG TRÀ SỮA");
@@ -135,7 +136,7 @@ public class Main extends JFrame {
 
         btnSanpham = new myButton("SẢN PHẨM");
 
-        btnNguoidung = new myButton("NGƯỜI DÙNG");
+        btnNguoidung = new myButton("NHÂN VIÊN");
 
         btnKhachhang = new myButton("KHÁCH HÀNG");
 
@@ -196,6 +197,12 @@ public class Main extends JFrame {
             tabbedPane.setSelectedIndex(1);
             
             
+        });
+        
+        btnNguoidung.addActionListener((ActionEvent e) -> {
+           emp_view = new Employee_view(nguoidung);
+            addTabBottomDown(NHANVIEN, emp_view);
+            tabbedPane.setSelectedComponent(emp_view);
         });
         
     }

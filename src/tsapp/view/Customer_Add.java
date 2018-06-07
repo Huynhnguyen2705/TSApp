@@ -8,7 +8,6 @@ package tsapp.view;
 import Entity.Customer;
 import Entity.Employee;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.math.BigDecimal;
@@ -65,12 +64,12 @@ public class Customer_Add extends javax.swing.JPanel {
 
         @Override
         public void keyPressed(KeyEvent e) {
-         
+
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            
+
         }
     };
 
@@ -87,12 +86,16 @@ public class Customer_Add extends javax.swing.JPanel {
         });
 
         btnAdd.addActionListener((ActionEvent e) -> {
-
-            if (insertCus()) {
-                JOptionPane.showMessageDialog(null, "Thêm khách hàng thành công");
+            if (!NameTF.getText().isEmpty() && !phoneTF.getText().isEmpty()) {
+                if (insertCus()) {
+                    JOptionPane.showMessageDialog(null, "Thêm khách hàng thành công");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Thêm không thành công");
+                }
             } else {
-                JOptionPane.showMessageDialog(null, "Thêm không thành công");
+                JOptionPane.showMessageDialog(null, "Không được để trống các giá trị!");
             }
+
         });
 
     }
@@ -105,7 +108,6 @@ public class Customer_Add extends javax.swing.JPanel {
         cus.setPhoneNumber(phoneTF.getText());
         cus.setTotalBill(BigDecimal.ZERO);
         cus.setCusType("CusType01");
-
         if (controller.insertCustomer(cus)) {
             return true;
         } else {

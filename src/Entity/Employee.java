@@ -21,6 +21,15 @@ public class Employee {
     private String UserName;
     private int Statue;
     private String AccRole;
+    private int IDInt;
+
+    public int getIDInt() {
+        return IDInt;
+    }
+
+    public void setIDInt(int IDInt) {
+        this.IDInt = IDInt;
+    }
 
     public String getID() {
         return ID;

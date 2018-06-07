@@ -149,3 +149,62 @@ AS
 		WHERE ID = @p_ID;
 	END
 exec updateCustomer 'KH1',N'Trần Gia Huynh','01234568524'
+
+
+go
+create procedure searchEmployee
+	@p_keyword varchar(100)
+AS
+	BEGIN
+		SELECT	Employee.ID, EmpFullName, PhoneNumber,DOB, IDCard, EmpAddress, Account.UserName, RoleAcc.RoleName, Employee.Statue,
+		CONVERT(INT, (SUBSTRING(Employee.ID,4,2))) AS IDInt FROM Employee, RoleAcc, Account
+		WHERE Employee.UserName = Account.UserName and
+			Account.AccRole = RoleAcc.ID and 
+			( Employee.ID LIKE N'%' + @p_keyword +'%'  or
+				EmpFullName LIKE N'%' + @p_keyword +'%' or
+				PhoneNumber LIKE N'%' + @p_keyword +'%' or
+				DOB LIKE N'%' + @p_keyword +'%' or
+				IDCard LIKE N'%' + @p_keyword +'%' or
+				Account.UserName LIKE N'%' + @p_keyword +'%' or
+				RoleAcc.RoleName LIKE N'%' + @p_keyword +'%')
+		ORDER BY IDInt DESC;
+
+	END
+	drop proc searchEmployee
+exec searchEmployee 'qua'
+
+go
+
+go
+create procedure insertAccount
+	@p_Username varchar(20),
+	@p_Password varchar(30),
+	@p_RoleID varchar(6)
+AS
+	BEGIN
+		insert into Account values (@p_Username, @p_Password, @p_RoleID);
+	END;
+EXEC insertAccount 'test','test','Role01'
+
+go
+create procedure insertEmployee
+	@p_ID varchar(8),
+	@p_FullName nvarchar(40),
+	@p_PhoneNumber varchar(11),
+	@p_DOB date,
+	@p_IDCard varchar(12),
+	@p_Address nvarchar(100),
+	@p_UserName varchar(20),
+	@p_Status tinyint
+	
+AS
+	BEGIN
+		insert into Employee values(@p_ID, @p_fullName, @p_phoneNumber, @p_DOB, @p_IDCard, @p_Address, @p_UserName, @p_Status);
+	END
+
+	exec insertEmployee 'NV4','test johnson','11111111111','04/02/1991','555555555','Jakarta','test',1
+
+
+
+
+
