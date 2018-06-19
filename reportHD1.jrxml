@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportHD1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="768dcf04-284a-47ef-b9cd-f0045b00a033">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ID" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     Invoice."CreatedDate",
+     Invoice."ID",
+     Invoice."totalBill" AS totalBill,
+     Employee."EmpFullName" AS Employee_EmpFullName,
+     Customer."FullName" AS CusName,
+     InvoiceDetail."Quantity" AS InvoiceDetail_Quantity,
+     Product."ProductName" AS Product_ProductName,
+     Product."Price" AS Product_Price,
+     ProductSize."SizeName" AS Product_Size
+FROM
+     "Invoice" Invoice,
+     "InvoiceDetail" InvoiceDetail,
+     "Customer" Customer,
+     "Employee" Employee,
+     "Product" Product,
+     "ProductSize" ProductSize
+WHERE
+     EmpID = Employee.ID
+     and CusID = Customer.ID
+     and Invoice.ID = InvceID
+     and ProdID = Product.ID
+     and Size = ProductSize.ID
+	and Invoice."ID" = $P{ID}]]>
+	</queryString>
+	<field name="CreatedDate" class="java.sql.Timestamp"/>
+	<field name="ID" class="java.lang.String"/>
+	<field name="totalBill" class="java.math.BigDecimal"/>
+	<field name="Employee_EmpFullName" class="java.lang.String"/>
+	<field name="CusName" class="java.lang.String"/>
+	<field name="InvoiceDetail_Quantity" class="java.lang.Integer"/>
+	<field name="Product_ProductName" class="java.lang.String"/>
+	<field name="Product_Price" class="java.math.BigDecimal"/>
+	<field name="Product_Size" class="java.lang.String"/>
+	<group name="ID">
+		<groupExpression><![CDATA[$F{ID}]]></groupExpression>
+		<groupHeader>
+			<band height="16">
+				<line>
+					<reportElement x="-20" y="0" width="595" height="1" forecolor="#666666" uuid="b9e71d00-b070-4095-bdf8-3375bd1caa37"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699" uuid="caedecea-65c3-4a8d-8374-3c6b5a06406d"/>
+				<staticText>
+					<reportElement x="111" y="0" width="62" height="33" forecolor="#FFFFFF" uuid="e3d6ab9d-4448-4250-b086-bfa87ae4b816"/>
+					<textElement>
+						<font size="25" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Sky]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="20" y="0" width="83" height="20" forecolor="#FFFFFF" uuid="802dfdb6-70b9-4be6-a454-81dea5b54a6e"/>
+					<textElement textAlignment="Left">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Làng đại học]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="336" y="33" width="98" height="20" forecolor="#FFFFFF" backcolor="#006699" uuid="5bc9f35d-ab6e-4430-9dc4-aa405548da86"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nhân viên:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="336" y="65" width="98" height="20" forecolor="#FFFFFF" backcolor="#006699" uuid="1ea1c43f-283a-4c90-aa5e-551732607e0e"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Khách hàng:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="336" y="2" width="69" height="20" forecolor="#FFFFFF" backcolor="#006699" uuid="4b716376-da2c-4b71-b54f-c8718467e681"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ngày lập:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="417" y="3" width="178" height="20" forecolor="#FFFFFF" uuid="6849e401-69ab-4f96-b3bf-061cf1fa4af5"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CreatedDate}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="417" y="33" width="178" height="20" forecolor="#FFFFFF" uuid="e8ebc6e5-6abe-47e4-9aef-f96d4a659681"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Employee_EmpFullName}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement x="417" y="65" width="178" height="20" forecolor="#FFFFFF" uuid="b635d3dc-000c-463c-a5ca-076131515e25"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CusName}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="20" y="53" width="190" height="39" forecolor="#FFFFFF" backcolor="#006699" uuid="43d876a9-2d79-4abd-9bee-a4dc76a82626"/>
+					<textElement>
+						<font size="28" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<line>
+				<reportElement x="-20" y="20" width="595" height="1" forecolor="#666666" uuid="8151b8bd-e516-4acc-b44d-17edd054921a"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="83" y="0" width="69" height="20" forecolor="#006699" backcolor="#FFFFFF" uuid="b92f4c68-123c-4079-9b32-bbb0a4221233"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tên món]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="234" y="1" width="58" height="19" forecolor="#006699" backcolor="#FFFFFF" uuid="dfbabbab-5617-496b-9ac5-c66f7b435126"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Size]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="316" y="0" width="65" height="20" forecolor="#006699" backcolor="#FFFFFF" uuid="47ad845f-9e05-4cdf-bee6-9b05122801d3"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="397" y="0" width="158" height="20" forecolor="#006699" backcolor="#FFFFFF" uuid="db3149d1-2d69-403e-a29c-1e8516006d7c"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Đơn giá]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="316" y="6" width="58" height="20" uuid="f7fce074-1939-4115-9be6-850e0191b36f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{InvoiceDetail_Quantity}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="6" width="221" height="20" uuid="04731682-d51e-420e-9270-ce655281ba03"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Product_ProductName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="397" y="5" width="158" height="20" uuid="a7d0b139-74b1-43ef-88ca-5e19af26be4b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Product_Price}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="234" y="6" width="49" height="20" uuid="7af60660-961a-4bdb-b5be-1f532f4e5f5c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Product_Size}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="36">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="555" height="1" uuid="ae06cd15-5564-4353-8015-20b6a7859337"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement isPrintRepeatedValues="false" x="295" y="1" width="208" height="30" uuid="da876210-8141-4b09-927c-73b91dc7faef"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="16" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalBill}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="209" y="0" width="83" height="30" uuid="ba83c153-0547-4506-832e-2f5b9521042b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="16" isItalic="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Thành tiền:]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

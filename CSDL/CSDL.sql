@@ -77,7 +77,8 @@ create table Paramater(
 	EmpID varchar(6) FOREIGN KEY REFERENCES Employee(ID),
 	CusID varchar(8) FOREIGN KEY REFERENCES Customer(ID),
 	InvoiceNote nvarchar(200),
-	Statue tinyint
+	totalBill money not null,
+	statue tinyint
  );
 
 create table InvoiceDetail(
@@ -97,11 +98,10 @@ create procedure get_Employee_login
 	@p_Password  varchar(30)
 AS
 	BEGIN
-		SELECT EmpFullName, Statue, AccRole
+		SELECT E.ID as ID, EmpFullName, Statue, AccRole
 		FROM Employee E, Account A 
 		WHERE E.UserName = A.UserName and A.UserName = @p_Username and A.Passwrd = @p_Password;
 	END	 
-	
 EXECUTE get_Employee_login 'quann','admin'
 
 drop proc searchCustomer
@@ -300,9 +300,24 @@ AS
 
 	END
 	drop proc searchProduct_Status
-exec searchProduct_Status N'đào',1
+exec searchProduct_Status N'cafe',1
 
-
+go
+create procedure searchProduct_TypeID
+	@p_typeID varchar(11),
+	@p_status tinyint
+AS
+	BEGIN
+		SELECT	Product.ID as ProdID, ProductName, Price, TypeName, SizeName, Product.Statue as ProdStatue,
+		 ProductSize.ID as SizeID, ProductType.ID as TypeID, ProductType.Statue as TypeStatus
+		 From Product, ProductSize, ProductType
+		 Where  Product.ProductType = ProductType.ID and
+			Product.Size = ProductSize.ID and 
+				Product.ProductType = @p_typeID and
+				Product.Statue = @p_status
+	END
+	
+exec searchProduct_TypeID 'ProdType1',1
 go
 create procedure searchProd_ID
 	@p_ID varchar(10)
@@ -323,7 +338,7 @@ AS
 	BEGIN
 		select ID, TypeName, Statue from ProductType
 	END;
-
+	exec getProductType
 create procedure getProductSize
 AS
 	BEGIN
@@ -358,5 +373,89 @@ AS
 		where ID = @p_ID
 	END
 exec updateProduct 'SP1','test update',15000,'Size2','ProdType2',2
-	
 
+go
+create procedure searchInvoice
+	@p_fromDate date,
+	@p_toDate date
+AS
+	BEGIN
+		select Invoice.ID, CreatedDate, UserName, Customer.FullName as CusName, InvoiceNote, Invoice.totalBill as totalBill,
+			Invoice.statue as statue, CONVERT(INT, (SUBSTRING(Invoice.ID,3,9))) AS IDInt 
+		FROM Invoice, Employee, Customer
+		WHERE Invoice.EmpID = Employee.ID and Invoice.CusID = Customer.ID
+		and (CreatedDate between @p_fromDate and @p_toDate)
+		ORDER BY IDInt DESC;
+	END
+	
+exec searchInvoice '01/01/2017','06/08/2018'
+
+go
+create procedure getProd
+	@p_prodName nvarchar(30),
+	@p_sizeID varchar(6)
+AS
+	BEGIN
+		select ID, ProductName, Price, Size, ProductType, Statue from Product
+		where ProductName = @p_prodName and Size = @p_sizeID;
+	END
+	drop proc getProd
+exec getProd N'Trà sữa kiwi','Size2'
+
+
+go
+create procedure insertInvoiceDetail
+	@p_ID varchar(19),
+	@p_InvoiceID varchar(12),
+	@p_ProdID varchar(10),
+	@p_Quantity int
+AS
+	BEGIN
+		insert InvoiceDetail values (@p_ID, @p_InvoiceID, @p_ProdID, @p_Quantity);
+	END
+
+exec insertInvoiceDetail 'CTHD2','HD1','SP2',1
+
+go
+create procedure insertInvoice
+	@p_ID varchar(12),
+	@p_EmpID varchar(6),
+	@p_CusID varchar(8),
+	@p_totalBill money
+AS
+	BEGIN
+		insert into Invoice values(@p_ID, CURRENT_TIMESTAMP, @p_EmpID, @p_CusID, null,@p_totalBill,1);
+	END
+
+exec insertInvoice 'HD27','NV3','KH6',24000
+
+go
+create procedure searchInvoiceDetail
+	@p_keyword varchar(19)
+AS
+	BEGIN
+		select ID, InvceID, ProdID, Quantity,
+			CONVERT(INT, (SUBSTRING(ID,5,14))) AS IDInt 
+		FROM InvoiceDetail
+		WHERE ( InvceID LIKE N'%' + @p_keyword +'%'  or
+				ProdID LIKE N'%' + @p_keyword +'%')
+		ORDER BY IDInt DESC;
+	END
+
+	exec searchInvoiceDetail 'HD29'
+
+go
+create procedure searchInvoiceID
+	@p_keyword nvarchar(100)
+AS
+	BEGIN
+		SELECT	ID, CreatedDate, EmpID, CusID, InvoiceNote, totalBill, statue, 
+		CONVERT(INT, (SUBSTRING(ID,3,9))) AS IDInt 
+		FROM Invoice
+		WHERE  
+			( ID LIKE N'%' + @p_keyword +'%')
+		ORDER BY IDInt DESC;
+
+	END
+exec searchInvoiceID ''
+	

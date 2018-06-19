@@ -71,7 +71,7 @@ public class EmployeeSearch_view extends javax.swing.JPanel {
         column.add("Mã NV");
         column.add("Họ và tên");
         column.add("SĐT");
-        column.add("Ngày sinh");
+        column.add("DOB");
         column.add("CMND");
         column.add("Địa chỉ");
         column.add("Tên TK");
@@ -99,6 +99,7 @@ public class EmployeeSearch_view extends javax.swing.JPanel {
             dtm.addRow(row);
         }    
         table.setModel(dtm);
+        myTable.setTextCenter(table);
         resizeColumnWidth(table);
         table.setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
         table.setAutoscrolls(true);
@@ -145,7 +146,7 @@ public class EmployeeSearch_view extends javax.swing.JPanel {
 
         table.addMouseListener(mouseListener);
     }
-    private MouseListener  mouseListener = new MouseListener() {
+    private final MouseListener  mouseListener = new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 selectedID = (String) table.getValueAt(table.getSelectedRow(), 1);

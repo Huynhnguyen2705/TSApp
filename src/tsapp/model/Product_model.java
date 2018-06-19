@@ -24,7 +24,9 @@ public class Product_model {
 
     private final String SEARCH_PRODUCT = "{call searchProduct(?)}";
     private final String SEARCH_PRODUCT_ID = "{call searchProd_ID(?)}";
+    private final String SEARCH_PRODUCT_TYPEID = "{call searchProduct_TypeID(?,?)}";
     private final String SEARCH_PRODUCT_STATUS = "{call searchProduct_Status(?,?)}";
+    private final String GET_PROD = "{call getProd(?,?)}";
     private final String GET_TYPE = "{call getProductType()}";
     private final String GET_SIZE = "{call getProductSize()}";
     private final String INSERT_PRODUCT = "{call insertProduct (?,?,?,?,?,?)}";
@@ -43,7 +45,9 @@ public class Product_model {
             while (rs.next()) {
                 ProductType item = new ProductType();
                 item.setID(rs.getString("ID"));
-                item.setTypeName(rs.getString("TypeName"));
+                if(rs.getString("TypeName") != null){
+                    item.setTypeName(rs.getString("TypeName"));
+                }
                 item.setStatus(rs.getInt("Statue"));
                 listType.add(item);
             }
@@ -113,6 +117,39 @@ public class Product_model {
         return listProd;
     }
     
+    public Product getProduct(String prodName, String sizeID) {
+        try {
+
+            connection = myConnection.getSQLServerConnection();
+
+            callStament = connection.prepareCall(GET_PROD);
+
+            callStament.setString(1, prodName);
+            callStament.setString(2, sizeID);
+            rs = callStament.executeQuery();
+            if (rs.next()) {
+                Product item = new Product();
+                item.setID(rs.getString("ID"));
+                item.setProdName(rs.getString("ProductName"));
+                item.setPrice(rs.getBigDecimal("Price"));
+                item.setTypeID(rs.getString("ProductType"));
+                item.setSizeID(rs.getString("Size"));
+                item.setStatus(rs.getInt("Statue"));
+                return item;
+            }
+
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Product_model.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Product_model.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+    
     public Product searchProductID(String keyword) throws ClassNotFoundException, SQLException {
         try {
 
@@ -145,6 +182,41 @@ public class Product_model {
         return null;
     }
     
+    
+    public ArrayList<Product> searchProduct_TypeID(String keyword,int status) throws ClassNotFoundException, SQLException {
+        ArrayList<Product> listProd = new ArrayList<>();
+        try {
+
+            connection = myConnection.getSQLServerConnection();
+
+            callStament = connection.prepareCall(SEARCH_PRODUCT_TYPEID);
+
+            callStament.setString(1, keyword);
+            callStament.setInt(2, status);
+            rs = callStament.executeQuery();
+            while (rs.next()) {
+                Product item = new Product();
+                item.setID(rs.getString("ProdID"));
+                item.setProdName(rs.getString("ProductName"));
+                item.setPrice(rs.getBigDecimal("Price"));
+                item.setTypeName(rs.getString("TypeName"));
+                item.setSizeName(rs.getString("SizeName"));
+                item.setStatus(rs.getInt("ProdStatue"));
+                item.setSizeID(rs.getString("SizeID"));
+                item.setTypeID(rs.getString("TypeID"));
+                item.setTypeStatus(rs.getInt("TypeStatus"));
+                listProd.add(item);
+            }
+
+            return listProd;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Product_model.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            connection.close();
+        }
+        return listProd;
+    }
     
     public ArrayList<Product> searchProductStatus(String keyword, int status) throws ClassNotFoundException, SQLException {
         ArrayList<Product> listProd = new ArrayList<>();

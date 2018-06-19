@@ -50,7 +50,7 @@ public class Customer_view extends javax.swing.JPanel {
         
         btnTraCuu.addActionListener((ActionEvent e) -> {
             Main.addTabBottomDown(Main.KHACHHANG, Main.kh);
-            CustomerSearch_view search_view = new CustomerSearch_view(emp);
+            CustomerSearch_view search_view = new CustomerSearch_view(emp, false);
             Main.tabbedPane.add(TRACUU_KHACHHANG,search_view);
             Main.tabbedPane.setSelectedComponent(search_view);
         });

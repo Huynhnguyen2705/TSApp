@@ -94,6 +94,7 @@ public class ProductSearch_view extends javax.swing.JPanel {
         }
         table.setModel(dtm);
         resizeColumnWidth(table);
+        myTable.setTextCenter(table);
         table.setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
         table.setAutoscrolls(true);
 

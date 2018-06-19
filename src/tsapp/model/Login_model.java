@@ -40,6 +40,7 @@ public class Login_model {
             rs = callStament.executeQuery();
             
             if (rs.next()) {
+                emp.setID(rs.getString("ID"));
                 emp.setFullName(rs.getString("EmpFullName"));
                 emp.setStatue(rs.getInt("Statue"));
                 emp.setAccRole(rs.getString("AccRole"));

@@ -5,7 +5,6 @@
  */
 package tsapp.component;
 
-import java.awt.Button;
 import java.awt.Color;
 import static java.awt.Color.BLACK;
 import java.awt.Dimension;
@@ -16,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 /**
@@ -29,27 +29,27 @@ public class myButton extends JButton {
 
     public myButton(String text) {
         super(text);
-        super.setPreferredSize(new Dimension(80, 30));
+        super.setPreferredSize(new Dimension(80, 60));
         super.setVerticalTextPosition(SwingConstants.CENTER);
         super.setHorizontalTextPosition(SwingConstants.CENTER);
 //        super.setBackground(new Color(183, 205, 175));
         super.setBackground(Color.WHITE);
-        super.setBorder(new LineBorder(new Color(67, 98, 72)));
+        super.setContentAreaFilled(false);
         super.setFont(new Font("Myriad Pro", Font.PLAIN, 15));
         super.setForeground(BLACK);
-        super.setContentAreaFilled(false);
         super.setOpaque(true);
     }
 
     public myButton(String text, String iconURL) throws IOException {
         Image img = ImageIO.read(getClass().getClassLoader().getResource(iconURL));
-        Image newimg = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
+        Image newimg = img.getScaledInstance(30, 50, java.awt.Image.SCALE_SMOOTH);
         super.setIcon(new ImageIcon(newimg));
         super.setText(text);
         super.setVerticalTextPosition(SwingConstants.BOTTOM);
         super.setHorizontalTextPosition(SwingConstants.CENTER);
         super.setBackground(new Color(255, 153, 153));
-        super.setBorder(new LineBorder(new Color(67, 98, 72), 5));
+//        super.setBorder(new LineBorder(new Color(67, 98, 72), 5));
+        super.setContentAreaFilled(false);
         super.setFont(new Font("Myriad Pro", Font.PLAIN, 15));
         super.setForeground(BLACK);
         super.setContentAreaFilled(false);

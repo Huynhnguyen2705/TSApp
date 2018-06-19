@@ -16,7 +16,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -100,8 +99,8 @@ public class Main extends JFrame {
     private void hasPermission(){
         if("Role02".equals(nguoidung.getAccRole())){
             btnNguoidung.setEnabled(false);
-            btnNguoidung.setBackground(Color.GRAY);
-            btnQuydinh.setBackground(Color.GRAY);
+            btnNguoidung.setBackground(new Color (211,211,211));
+            btnQuydinh.setBackground(new Color (211,211,211));
             btnQuydinh.setEnabled(false);
         }else{
             btnNguoidung.setEnabled(true);

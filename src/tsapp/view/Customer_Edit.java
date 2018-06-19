@@ -99,7 +99,7 @@ public class Customer_Edit extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "Cập nhật khách hàng thành công");
                 Main.tabbedPane.remove(3);
                 Main.addTabBottomDown(Main.KHACHHANG, Main.kh);
-                Main.tabbedPane.add("Tra cứu", new CustomerSearch_view(emp));
+                Main.tabbedPane.add("Tra cứu", new CustomerSearch_view(emp, false));
                 Main.tabbedPane.setSelectedIndex(2);
                 
             } else {

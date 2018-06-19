@@ -7,6 +7,7 @@ package tsapp.view;
 
 import Entity.Customer;
 import Entity.Employee;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -15,7 +16,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import tsapp.component.myTable;
 import tsapp.controller.Customer_controller;
 
@@ -35,10 +40,12 @@ public class CustomerSearch_view extends javax.swing.JPanel {
     private DefaultTableModel dtm;
     public static String selectedCustomerID;
     public static JPanel searchView;
+    private boolean isIntoInvoice;
 
-    public CustomerSearch_view(Employee emp) {
+    public CustomerSearch_view(Employee emp, boolean isIntoInvoice) {
         initComponents();
         this.emp = emp;
+        this.isIntoInvoice = isIntoInvoice;
         tenND = emp.getFullName();
         this.searchView = this;
         createUI();
@@ -82,7 +89,27 @@ public class CustomerSearch_view extends javax.swing.JPanel {
         }    
         
         table.setModel(dtm);
+        resizeColumnWidth(table);
+        myTable.setTextCenter(table);
+        table.setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+        table.setAutoscrolls(true);
         
+    }
+    
+    public void resizeColumnWidth(JTable table) {
+        final TableColumnModel columnModel = table.getColumnModel();
+        for (int column = 0; column < table.getColumnCount(); column++) {
+            int width = 50; // Min width
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer renderer = table.getCellRenderer(row, column);
+                Component comp = table.prepareRenderer(renderer, row, column);
+                width = Math.max(comp.getPreferredSize().width + 1, width);
+            }
+            if (width > 300) {
+                width = 300;
+            }
+            columnModel.getColumn(column).setPreferredWidth(width);
+        }
     }
 
     private void actionListener() {
@@ -97,11 +124,18 @@ public class CustomerSearch_view extends javax.swing.JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 selectedCustomerID = (String) table.getValueAt(table.getSelectedRow(), 1);
-                Customer_Edit edit = new Customer_Edit(emp);
-                Main.addTabBottomDown(Main.KHACHHANG    , Main.kh);
-                Main.tabbedPane.add("Tra cứu",searchView);
-                Main.tabbedPane.add(">Sửa",edit);
-                Main.tabbedPane.setSelectedComponent(edit);
+                if(!isIntoInvoice){
+                    Customer_Edit edit = new Customer_Edit(emp);
+                    Main.addTabBottomDown(Main.KHACHHANG    , Main.kh);
+                    Main.tabbedPane.add("Tra cứu",searchView);
+                    Main.tabbedPane.add(">Sửa",edit);
+                    Main.tabbedPane.setSelectedComponent(edit);
+                }
+                else{
+                    Invoice_Add.CusID = selectedCustomerID;
+                    Invoice_Add.cusTF.setText((String) table.getValueAt(table.getSelectedRow(), 2));
+                    Main.tabbedPane.remove(searchView);
+                }
             }
 
             @Override
