@@ -57,16 +57,6 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         this.searchView = this;
         createUI();
         actionListener();
-        //searchEmp();
-        
-        
-        ArrayList<String> rs = CurrencyToWords.readNum("100091000".replace(".0000", ""));
-        String totalText = "";
-        for (int i = 0; i < rs.size(); i++) {
-            totalText += rs.get(i) + " ";
-        }
-        System.out.print(totalText);
-
     }
 
     private void createUI() {
@@ -307,6 +297,8 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
     private void setEnable() {
         empCkbx.setVisible(hasPemission());
         statusCkbx.setVisible(hasPemission());
+        totalNumberLbl.setVisible(false);
+        totalTextLbl.setVisible(false);
     }
     private final MouseListener mouseListener = new MouseListener() {
         @Override
