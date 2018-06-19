@@ -48,6 +48,11 @@ public class Login extends javax.swing.JFrame {
     private void Login() {
 
         emp = controller.getEmpLogin(usernameTF.getText(), passwdTF.getText());
+//        emp = new Employee();
+//        emp.setFullName("Quân Nguyễn");
+//        emp.setAccRole("Role1");
+//        emp.setID("NV3");
+//        emp.setStatue(1);
         if (emp.getStatue() != 0) {
             setErrorLabelVisible(false);
             Main frame = new Main(emp);
