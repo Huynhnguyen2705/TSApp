@@ -94,6 +94,7 @@ public class Invoice_Add extends javax.swing.JPanel {
 
         listInvoice = controller.searchInvoiceID("");
         IDLabel.setText("HD" + (listInvoice.get(0).getIDInt() + 1));
+        cups = 0;
 
         prod_con = new Product_controller();
         setComboBox();
@@ -103,6 +104,7 @@ public class Invoice_Add extends javax.swing.JPanel {
         Image img = icon.getImage();
         Image newimg = img.getScaledInstance(30, 50, java.awt.Image.SCALE_SMOOTH);
         icon = new ImageIcon(newimg);
+        jButton1.setText(Integer.toString(cups));
         jButton1.setFont(new Font("Myriad Pro", Font.PLAIN, 28));
         jButton1.setVerticalTextPosition(SwingConstants.BOTTOM);
         jButton1.setHorizontalTextPosition(SwingConstants.LEFT);
@@ -241,32 +243,33 @@ public class Invoice_Add extends javax.swing.JPanel {
             }
 
         });
-        
+
         table.addMouseListener(listener);
 
     }
-    
+
     private MouseListener listener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if(table.getSelectedColumn() == 4){
-                if(!table.getValueAt(table.getSelectedRow(), 0).equals("")){
-                    for(int i = table.getSelectedRow() + 1; i < table.getRowCount(); i ++){
-                        if(table.getValueAt(i, 0).equals("")){
-                            ((DefaultTableModel)table.getModel()).removeRow(i);
-                            cups = cups - 1;
-                            total = total.subtract(revertPrice(table.getValueAt(i, 3).toString()));
-                        }else{
-                            break;
-                        }
+            if (table.getSelectedColumn() == 4) {
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                int j = table.getSelectedRow();
+                if (!model.getValueAt(j, 0).equals("") && j + 1 < table.getRowCount()) {
+                    if (model.getValueAt(j + 1, 1).toString().contains("+")) {
+                        JOptionPane.showMessageDialog(null, "Không được xóa món khi có topping");
+                    } else {
+                        total = total.subtract(revertPrice(model.getValueAt(j, 3).toString()));
+                        model.removeRow(j);
+                        cups = cups - 1;
                     }
+                } else {
+                    total = total.subtract(revertPrice(model.getValueAt(table.getSelectedRow(), 3).toString()));
+                    model.removeRow(table.getSelectedRow());
                 }
-                ((DefaultTableModel)table.getModel()).removeRow(table.getSelectedRow());
-                total = total.subtract(revertPrice(table.getValueAt(table.getSelectedRow(), 3).toString()));
-                cups = cups - 1;
-                jButton1.setText(Integer.toString(cups));
-                totalLbl.setText(formatPrice(total.toString()));
                 
+                jButton1.setText(Integer.toString(countCups()));
+                totalLbl.setText(formatPrice(total.toString()));
+
             }
         }
 
@@ -280,13 +283,22 @@ public class Invoice_Add extends javax.swing.JPanel {
 
         @Override
         public void mouseEntered(MouseEvent e) {
-       }
+        }
 
         @Override
         public void mouseExited(MouseEvent e) {
         }
     };
 
+    private int countCups(){
+        int count = 0;
+        for(int i = 0; i < table.getRowCount(); i ++){
+            if(!table.getModel().getValueAt(i, 0).toString().equals("")){
+                count += 1;
+            }
+        }
+        return count;
+    }
     private Product getProd(String prodName, String sizeName) {
         String sizeID = prod_con.getMaSize(sizeName);
         return prod_con.getProd(prodName, sizeID);
@@ -330,7 +342,7 @@ public class Invoice_Add extends javax.swing.JPanel {
 
         String stt = "";
 
-        if(isEmpty(table)){
+        if (isEmpty(table)) {
             cups = 0;
         }
         if (!isTopping) {
@@ -357,10 +369,12 @@ public class Invoice_Add extends javax.swing.JPanel {
     private String formatPrice(String price) {
         return price.replace(".0000", " đồng");
     }
-    private BigDecimal revertPrice(String price){
+
+    private BigDecimal revertPrice(String price) {
         price = price.replace(" đồng", ".0000");
         return new BigDecimal(price);
     }
+
     private void hideTableGrid(boolean isTopping) {
         if (isTopping) {
             table.setShowHorizontalLines(false);
