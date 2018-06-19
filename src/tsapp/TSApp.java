@@ -5,6 +5,7 @@
  */
 package tsapp;
 
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -28,6 +29,7 @@ public class TSApp {
                 JFrame frame = new Login();
                 frame.setSize(1280, 800);
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setExtendedState(MAXIMIZED_BOTH);
                 frame.setVisible(true);
                 frame.pack();
             } catch (Exception ex) {

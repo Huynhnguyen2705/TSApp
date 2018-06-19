@@ -384,11 +384,11 @@ AS
 			Invoice.statue as statue, CONVERT(INT, (SUBSTRING(Invoice.ID,3,9))) AS IDInt 
 		FROM Invoice, Employee, Customer
 		WHERE Invoice.EmpID = Employee.ID and Invoice.CusID = Customer.ID
-		and (CreatedDate between @p_fromDate and @p_toDate)
+		and (CreatedDate between @p_fromDate and DATEADD(day, 1, @p_toDate))
 		ORDER BY IDInt DESC;
 	END
-	
-exec searchInvoice '01/01/2017','06/08/2018'
+	drop proc searchInvoice
+exec searchInvoice '01/01/2017','06/19/2018'
 
 go
 create procedure getProd
@@ -423,11 +423,28 @@ create procedure insertInvoice
 	@p_CusID varchar(8),
 	@p_totalBill money
 AS
+	DECLARE @totalCus money
+	DECLARE @typeVang int
+	DECLARE @typeKC int
 	BEGIN
 		insert into Invoice values(@p_ID, CURRENT_TIMESTAMP, @p_EmpID, @p_CusID, null,@p_totalBill,1);
+		update Customer set TotalBill = TotalBill + @p_totalBill where ID = @p_CusID;
+		select @totalCus = TotalBill from Customer where ID = @p_CusID;
+		select @typeVang = ParaValue from Paramater where ID = 'TS1';
+		select @typeKC = Paramater.ParaValue from Paramater where ID ='TS2';
+		if(@totalCus >= @typeVang and @totalCus < @typeKC)
+			BEGIN
+				update Customer set CusType = 'CusType02' where ID = @p_CusID;
+			END
+		else if (@totalCus >= @typeKC)
+			BEGIN
+				update Customer set CusType = 'CusType03' where ID = @p_CusID;
+			END
 	END
+	
+exec insertInvoice 'HD32','NV3','KH6',53000
 
-exec insertInvoice 'HD27','NV3','KH6',24000
+
 
 go
 create procedure searchInvoiceDetail
@@ -442,7 +459,7 @@ AS
 		ORDER BY IDInt DESC;
 	END
 
-	exec searchInvoiceDetail 'HD29'
+	exec searchInvoiceDetail 'HD1'
 
 go
 create procedure searchInvoiceID
@@ -458,4 +475,51 @@ AS
 
 	END
 exec searchInvoiceID ''
-	
+
+	go
+create procedure searchInvoice_Status
+	@p_fromDate date,
+	@p_toDate date,
+	@p_status int
+AS
+	BEGIN
+		SELECT Invoice.ID, CreatedDate, UserName, Customer.FullName as CusName, InvoiceNote, Invoice.totalBill as totalBill,
+			Invoice.statue as statue, CONVERT(INT, (SUBSTRING(Invoice.ID,3,9))) AS IDInt
+		FROM Invoice, Employee, Customer
+		WHERE Invoice.EmpID = Employee.ID and Invoice.CusID = Customer.ID
+		and (CreatedDate between @p_fromDate and @p_toDate) 
+		and Invoice.statue = @p_status
+		ORDER BY IDInt DESC;
+	END
+exec searchInvoice_Status '01/01/2017','06/17/2018',2
+
+go
+create procedure searchInvoice_Emp
+	@p_fromDate date,
+	@p_toDate date,
+	@p_status int
+AS
+	BEGIN
+		SELECT  EmpID, UserName ,COUNT(Invoice.ID) as billnumbers, SUM(Invoice.totalBill) as total
+		FROM Invoice, Employee, Customer
+		WHERE Invoice.EmpID = Employee.ID and Invoice.CusID = Customer.ID
+		and (CreatedDate between @p_fromDate and @p_toDate) 
+		and Invoice.statue = @p_status
+		GROUP BY EmpID, UserName
+		ORDER BY total DESC;
+	END
+	drop proc searchInvoice_Emp
+exec searchInvoice_Emp '01/01/2017','06/17/2018',1
+
+select EmpID,UserName, count(Invoice.ID) as billnumbers,sum(totalBill) as total
+from Invoice, Employee
+where Invoice.EmpID = Employee.ID
+group by EmpID,UserName 
+order by total desc
+
+SELECT
+     E.EmpFullName, E.UserName, I.ID, I.CreatedDate, I.totalBill, I.InvoiceNote, C.FullName
+FROM
+    Employee E, Invoice I, Customer C
+WHERE
+    I.EmpID = E.ID and I.CusID = C.ID and EmpID = 'NV1'

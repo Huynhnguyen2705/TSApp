@@ -6,6 +6,7 @@
 package tsapp.view;
 
 import Entity.Employee;
+import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -16,6 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,6 +63,7 @@ public class Main extends JFrame {
     public static Employee_view emp_view;
     public static Product_view prod_view;
     public static Invoice_view invoice;
+    public static Statistic_view statistic;
 
     // Cac man hinh
     public static final String MAINFORM = "TRANG CHỦ";
@@ -68,6 +71,7 @@ public class Main extends JFrame {
     public static final String SANPHAM = "SẢN PHẨM";
     public static final String KHACHHANG = "KHÁCH HÀNG";
     public static final String NHANVIEN = "NHÂN VIÊN";
+    public static final String THONGKE = "THỐNG KÊ";
 
     public Main(Employee nd) {
         super("QUẢN LÝ CỬA HÀNG TRÀ SỮA");
@@ -152,7 +156,7 @@ public class Main extends JFrame {
 
         btnKhachhang = new myButton("KHÁCH HÀNG");
 
-        btnQuydinh = new myButton("QUY ĐỊNH");
+        btnQuydinh = new myButton("THỐNG KÊ");
 
         btnLogout = new myButton("ĐĂNG XUẤT");
         btnLogout.setForeground(new Color(25, 104, 192));
@@ -174,7 +178,6 @@ public class Main extends JFrame {
     private void setEnable(String role) {
         if ("Role02".equals(role)) {
             btnNguoidung.setEnabled(false);
-            btnQuydinh.setEnabled(false);
         }
         btnHoadon.setEnabled(true);
         btnSanpham.setEnabled(true);
@@ -182,6 +185,7 @@ public class Main extends JFrame {
         btnKhachhang.setEnabled(true);
         btnQuydinh.setEnabled(true);
         btnLogout.setEnabled(true);
+        btnQuydinh.setEnabled(true);
     }
 
     public static void addTabBottomDown(String tabName, JPanel componentName) {
@@ -227,6 +231,12 @@ public class Main extends JFrame {
             invoice = new Invoice_view(nguoidung);
             addTabBottomDown(HOADON, invoice);
             tabbedPane.setSelectedComponent(invoice);
+        });
+        
+        btnQuydinh.addActionListener((ActionEvent e) -> {
+            statistic = new Statistic_view(nguoidung);
+            addTabBottomDown(THONGKE, statistic);
+            tabbedPane.setSelectedComponent(statistic);
         });
 
     }

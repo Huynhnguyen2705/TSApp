@@ -9,7 +9,6 @@ import Entity.Employee;
 import Entity.Invoice;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigDecimal;
@@ -33,7 +32,7 @@ import tsapp.controller.Invoice_controller;
  *
  * @author Huynh
  */
-public class InvoiceSearch_view extends javax.swing.JPanel {
+public class StatisticEmp_view extends javax.swing.JPanel {
 
     /**
      * Creates new form NewJPanel
@@ -50,7 +49,7 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
     private BigDecimal total;
     private boolean mouseEnable;
 
-    public InvoiceSearch_view(Employee emp) {
+    public StatisticEmp_view(Employee emp) {
         initComponents();
         this.emp = emp;
         tenND = emp.getFullName();
@@ -58,14 +57,6 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         createUI();
         actionListener();
         //searchEmp();
-        
-        
-        ArrayList<String> rs = CurrencyToWords.readNum("100091000".replace(".0000", ""));
-        String totalText = "";
-        for (int i = 0; i < rs.size(); i++) {
-            totalText += rs.get(i) + " ";
-        }
-        System.out.print(totalText);
 
     }
 
@@ -76,8 +67,7 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         currentDateLabel.setText("Ngày " + dateFormat.format(date));
         mouseEnable = true;
         setDefaultDate();
-        searchInvoice(0);
-        setEnable();
+        searchInvoiceEMP(1);
     }
 
     public final void setDefaultDate() {
@@ -101,64 +91,6 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         return "Không hợp lệ";
     }
 
-    private void searchInvoice(int status) {
-        dtm = new DefaultTableModel();
-        controller = new Invoice_controller();
-        Vector column = new Vector();
-        column.add("STT");
-        column.add("Mã HĐ");
-        column.add("Ngày lập");
-        column.add("Nhân viên");
-        column.add("Khách hàng");
-        column.add("Thành tiền");
-        column.add("Ghi chú");
-        column.add("Trạng thái");
-        /* Set Column Header lên DefaultTableModel */
-        dtm.setColumnIdentifiers(column);
-
-        java.sql.Date fromDate = convertJavaDateToSqlDate(defaultDate1);
-        java.sql.Date toDate = convertJavaDateToSqlDate(defaultDate2);
-        if (status != 0) {
-            listInvoice = controller.searchInvoiceStauts(fromDate, toDate, status);
-        } else {
-            listInvoice = controller.searchInvoices(fromDate, toDate);
-        }
-
-        total = new BigDecimal(0);
-        for (int i = 0; i < listInvoice.size(); i++) {
-            Invoice item = listInvoice.get(i);
-            Vector row = new Vector();
-            row.add(i + 1);
-            row.add(item.getID());
-            row.add(convertSQLDateFormat(item.getCreatedDate()));
-            row.add(item.getEmpAccount());
-            row.add(item.getCusName());
-            row.add(formatPrice(item.getTotalBill().toString()));
-            total = total.add(item.getTotalBill());
-            if (item.getNote() == null) {
-                row.add("Không có ghi chú");
-            } else {
-                row.add(item.getNote());
-            }
-            row.add(formatStatue(item.getStatue()));
-
-            dtm.addRow(row);
-        }
-        table.setModel(dtm);
-        myTable.setTextCenter(table);
-        resizeColumnWidth(table);
-        table.setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
-        table.setAutoscrolls(true);
-        totalNumberLbl.setText("Tổng tiền: " + formatPrice(total.toString()));
-        ArrayList<String> rs = CurrencyToWords.readNum(total.toString().replace(".0000", ""));
-        String totalText = "";
-        for (int i = 0; i < rs.size(); i++) {
-            totalText += rs.get(i) + " ";
-        }
-        totalText = totalText.substring(0, 1).toUpperCase() + totalText.substring(1);
-        totalTextLbl.setText(totalText + "đồng");
-    }
-
     private void searchInvoiceEMP(int status) {
         dtm = new DefaultTableModel();
         controller = new Invoice_controller();
@@ -166,7 +98,7 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         column.add("STT");
         column.add("ID");
         column.add("Nhân viên");
-        column.add("Tổng số hóa đơn");
+        column.add("Số hóa đơn hợp lệ");
         column.add("Tổng doanh số");
         /* Set Column Header lên DefaultTableModel */
         dtm.setColumnIdentifiers(column);
@@ -235,7 +167,7 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
     private final void actionListener() {
         // Thoát
         btnBack.addActionListener((ActionEvent e) -> {
-            Main.tabbedPane.setSelectedComponent(Main.invoice);
+            Main.tabbedPane.setSelectedComponent(Main.statistic);
         });
 
         //datepicker
@@ -245,15 +177,8 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
                 fromDatePicker.setDate(defaultDate1);
             } else {
                 defaultDate1 = fromDatePicker.getDate();
-                //search here
-                if (statusCkbx.isSelected()) {
-                    searchInvoice(1);
-                } else if (empCkbx.isSelected()) {
-                    searchInvoiceEMP(1);
-                } else {
-                    searchInvoice(0);
-                }
 
+                searchInvoiceEMP(1);
             }
         });
         toDatePicker.addActionListener((ActionEvent e) -> {
@@ -263,63 +188,21 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
             } else {
                 defaultDate2 = toDatePicker.getDate();
                 //search here
-                if (statusCkbx.isSelected()) {
-                    searchInvoice(1);
-                } else if (empCkbx.isSelected()) {
-                    searchInvoiceEMP(1);
-                } else {
-                    searchInvoice(0);
-                }
-
-            }
-        });
-
-        statusCkbx.addItemListener((ItemEvent e) -> {
-            if (statusCkbx.isSelected()) {
-                empCkbx.setSelected(false);
-                searchInvoice(1);
-            } else {
-                searchInvoice(2);
-            }
-        });
-
-        empCkbx.addItemListener((ItemEvent e) -> {
-            if (empCkbx.isSelected()) {
-                statusCkbx.setSelected(false);
                 searchInvoiceEMP(1);
-                mouseEnable = false;
-            } else {
-                searchInvoice(0);
-                mouseEnable = true;
+
             }
         });
+
         table.addMouseListener(mouseListener);
 
     }
 
-    private boolean hasPemission() {
-        if (!"Role01".equals(emp.getAccRole())) {
-            return false;
-        }
-        return true;
-    }
-
-    private void setEnable() {
-        empCkbx.setVisible(hasPemission());
-        statusCkbx.setVisible(hasPemission());
-    }
-    private final MouseListener mouseListener = new MouseListener() {
+    private MouseListener mouseListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (hasPemission()) {
-                selectedID = (String) table.getValueAt(table.getSelectedRow(), 1);
-                if (mouseEnable) {
-                    controller.callReport(selectedID);
-                } else {
-                    controller.callReportEmp(selectedID);
-                }
-            }
+            selectedID = (String) table.getValueAt(table.getSelectedRow(), 1);
 
+            controller.callReportEmp(selectedID);
         }
 
         @Override
@@ -364,8 +247,6 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         toDatePicker = new org.jdesktop.swingx.JXDatePicker();
         totalTextLbl = new javax.swing.JLabel();
         totalNumberLbl = new javax.swing.JLabel();
-        empCkbx = new javax.swing.JCheckBox();
-        statusCkbx = new javax.swing.JCheckBox();
 
         setBackground(new java.awt.Color(25, 104, 192));
         setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
@@ -379,13 +260,18 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
 
         btnBack.setBackground(new java.awt.Color(255, 255, 255));
         btnBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/btnBack.PNG"))); // NOI18N
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
         add(btnBack);
         btnBack.setBounds(40, 90, 130, 30);
 
         lablelKH.setFont(new java.awt.Font("Myriad Pro", 0, 24)); // NOI18N
-        lablelKH.setText("Tra cứu:");
+        lablelKH.setText("Thống kê theo nhân viên:");
         add(lablelKH);
-        lablelKH.setBounds(230, 110, 100, 40);
+        lablelKH.setBounds(230, 110, 290, 40);
 
         currentDateLabel.setFont(new java.awt.Font("Myriad Pro", 0, 36)); // NOI18N
         currentDateLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -418,16 +304,16 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
         jLabel1.setText("Từ ngày:");
         add(jLabel1);
-        jLabel1.setBounds(230, 170, 90, 30);
+        jLabel1.setBounds(270, 170, 90, 30);
         add(fromDatePicker);
-        fromDatePicker.setBounds(310, 170, 280, 30);
+        fromDatePicker.setBounds(350, 170, 280, 30);
 
         jLabel2.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
         jLabel2.setText("Đến ngày:");
         add(jLabel2);
-        jLabel2.setBounds(610, 170, 90, 30);
+        jLabel2.setBounds(650, 170, 90, 30);
         add(toDatePicker);
-        toDatePicker.setBounds(720, 170, 280, 30);
+        toDatePicker.setBounds(760, 170, 280, 30);
 
         totalTextLbl.setFont(new java.awt.Font("Calibri", 0, 24)); // NOI18N
         totalTextLbl.setForeground(new java.awt.Color(255, 255, 255));
@@ -443,32 +329,22 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         add(totalNumberLbl);
         totalNumberLbl.setBounds(230, 600, 890, 30);
 
-        empCkbx.setBackground(new java.awt.Color(25, 104, 192));
-        empCkbx.setFont(new java.awt.Font("Myriad Pro", 0, 14)); // NOI18N
-        empCkbx.setText("Nhân viên");
-        add(empCkbx);
-        empCkbx.setBounds(1020, 190, 100, 20);
-
-        statusCkbx.setBackground(new java.awt.Color(25, 104, 192));
-        statusCkbx.setFont(new java.awt.Font("Myriad Pro", 0, 14)); // NOI18N
-        statusCkbx.setText("Hợp lệ");
-        add(statusCkbx);
-        statusCkbx.setBounds(1020, 170, 100, 20);
-
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBackActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JLabel currentDateLabel;
-    private javax.swing.JCheckBox empCkbx;
     private org.jdesktop.swingx.JXDatePicker fromDatePicker;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lablelKH;
-    private javax.swing.JCheckBox statusCkbx;
     private javax.swing.JTable table;
     private org.jdesktop.swingx.JXDatePicker toDatePicker;
     private javax.swing.JLabel totalNumberLbl;

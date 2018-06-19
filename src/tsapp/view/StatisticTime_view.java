@@ -10,6 +10,7 @@ import Entity.Invoice;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigDecimal;
@@ -33,7 +34,7 @@ import tsapp.controller.Invoice_controller;
  *
  * @author Huynh
  */
-public class InvoiceSearch_view extends javax.swing.JPanel {
+public class StatisticTime_view extends javax.swing.JPanel {
 
     /**
      * Creates new form NewJPanel
@@ -50,7 +51,7 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
     private BigDecimal total;
     private boolean mouseEnable;
 
-    public InvoiceSearch_view(Employee emp) {
+    public StatisticTime_view(Employee emp) {
         initComponents();
         this.emp = emp;
         tenND = emp.getFullName();
@@ -58,14 +59,6 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         createUI();
         actionListener();
         //searchEmp();
-        
-        
-        ArrayList<String> rs = CurrencyToWords.readNum("100091000".replace(".0000", ""));
-        String totalText = "";
-        for (int i = 0; i < rs.size(); i++) {
-            totalText += rs.get(i) + " ";
-        }
-        System.out.print(totalText);
 
     }
 
@@ -77,7 +70,6 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         mouseEnable = true;
         setDefaultDate();
         searchInvoice(0);
-        setEnable();
     }
 
     public final void setDefaultDate() {
@@ -248,8 +240,6 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
                 //search here
                 if (statusCkbx.isSelected()) {
                     searchInvoice(1);
-                } else if (empCkbx.isSelected()) {
-                    searchInvoiceEMP(1);
                 } else {
                     searchInvoice(0);
                 }
@@ -265,8 +255,6 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
                 //search here
                 if (statusCkbx.isSelected()) {
                     searchInvoice(1);
-                } else if (empCkbx.isSelected()) {
-                    searchInvoiceEMP(1);
                 } else {
                     searchInvoice(0);
                 }
@@ -276,50 +264,21 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
 
         statusCkbx.addItemListener((ItemEvent e) -> {
             if (statusCkbx.isSelected()) {
-                empCkbx.setSelected(false);
                 searchInvoice(1);
             } else {
                 searchInvoice(2);
             }
         });
 
-        empCkbx.addItemListener((ItemEvent e) -> {
-            if (empCkbx.isSelected()) {
-                statusCkbx.setSelected(false);
-                searchInvoiceEMP(1);
-                mouseEnable = false;
-            } else {
-                searchInvoice(0);
-                mouseEnable = true;
-            }
-        });
         table.addMouseListener(mouseListener);
 
     }
 
-    private boolean hasPemission() {
-        if (!"Role01".equals(emp.getAccRole())) {
-            return false;
-        }
-        return true;
-    }
-
-    private void setEnable() {
-        empCkbx.setVisible(hasPemission());
-        statusCkbx.setVisible(hasPemission());
-    }
-    private final MouseListener mouseListener = new MouseListener() {
+    private MouseListener mouseListener = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (hasPemission()) {
-                selectedID = (String) table.getValueAt(table.getSelectedRow(), 1);
-                if (mouseEnable) {
-                    controller.callReport(selectedID);
-                } else {
-                    controller.callReportEmp(selectedID);
-                }
-            }
-
+            selectedID = (String) table.getValueAt(table.getSelectedRow(), 1);
+            controller.callReport(selectedID);
         }
 
         @Override
@@ -364,11 +323,10 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         toDatePicker = new org.jdesktop.swingx.JXDatePicker();
         totalTextLbl = new javax.swing.JLabel();
         totalNumberLbl = new javax.swing.JLabel();
-        empCkbx = new javax.swing.JCheckBox();
         statusCkbx = new javax.swing.JCheckBox();
 
         setBackground(new java.awt.Color(25, 104, 192));
-        setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
+        setFont(new java.awt.Font("Myriad Pro", 0, 24)); // NOI18N
         setPreferredSize(new java.awt.Dimension(1056, 452));
         setLayout(null);
 
@@ -383,9 +341,9 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         btnBack.setBounds(40, 90, 130, 30);
 
         lablelKH.setFont(new java.awt.Font("Myriad Pro", 0, 24)); // NOI18N
-        lablelKH.setText("Tra cứu:");
+        lablelKH.setText("Thống kê theo thời gian:");
         add(lablelKH);
-        lablelKH.setBounds(230, 110, 100, 40);
+        lablelKH.setBounds(230, 110, 290, 40);
 
         currentDateLabel.setFont(new java.awt.Font("Myriad Pro", 0, 36)); // NOI18N
         currentDateLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -443,17 +401,11 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
         add(totalNumberLbl);
         totalNumberLbl.setBounds(230, 600, 890, 30);
 
-        empCkbx.setBackground(new java.awt.Color(25, 104, 192));
-        empCkbx.setFont(new java.awt.Font("Myriad Pro", 0, 14)); // NOI18N
-        empCkbx.setText("Nhân viên");
-        add(empCkbx);
-        empCkbx.setBounds(1020, 190, 100, 20);
-
         statusCkbx.setBackground(new java.awt.Color(25, 104, 192));
-        statusCkbx.setFont(new java.awt.Font("Myriad Pro", 0, 14)); // NOI18N
+        statusCkbx.setFont(new java.awt.Font("Myriad Pro", 0, 18)); // NOI18N
         statusCkbx.setText("Hợp lệ");
         add(statusCkbx);
-        statusCkbx.setBounds(1020, 170, 100, 20);
+        statusCkbx.setBounds(1020, 170, 100, 30);
 
         getAccessibleContext().setAccessibleParent(this);
     }// </editor-fold>//GEN-END:initComponents
@@ -462,7 +414,6 @@ public class InvoiceSearch_view extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JLabel currentDateLabel;
-    private javax.swing.JCheckBox empCkbx;
     private org.jdesktop.swingx.JXDatePicker fromDatePicker;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

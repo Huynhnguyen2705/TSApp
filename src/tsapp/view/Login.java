@@ -58,6 +58,7 @@ public class Login extends javax.swing.JFrame {
             Main frame = new Main(emp);
             frame.setSize(1300, 760);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setExtendedState(MAXIMIZED_BOTH);
             frame.setVisible(true);
             this.dispose();
         } else {
